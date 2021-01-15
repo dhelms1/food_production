@@ -18,7 +18,14 @@ Two different datasets will be used in the analysis, one coming from [Kaggle](ht
 
 ---
 
-## File Breakdown
+## Goal
+The overall goal for the project is to explore the Food Balance Sheet in order to determine the most produced foor items and the use case for them, whether it is for human or livestock consumption. We want to have an understanding of where the food we are producing is going, as well as clustering country's based on their production amount to understand which countries are responsible for a majority of food production. 
+
+Using the population dataset, we want to explore the idea of using a linear model that can estimate the total food production for a given year, with total population being the independent variable and total food production being the dependent varaible. This will allow us to see what the necessary production would be to support a given population number (test using the 2050 population estimate of 9.7 million).
+
+---
+
+## Project Breakdown
 *To be filled in...*
 
 ---
