@@ -1,8 +1,8 @@
 \contentsline {section}{\numberline {I.}Domain Background}{1}{section.1}%
 \contentsline {section}{\numberline {II.}Problem Statement}{1}{section.2}%
-\contentsline {section}{\numberline {III.}Datasets and Inputs}{1}{section.3}%
-\contentsline {section}{\numberline {IV.}Solution Statement}{1}{section.4}%
-\contentsline {section}{\numberline {V.}Benchmark Model}{1}{section.5}%
-\contentsline {section}{\numberline {VI.}Evaluation Metrics}{1}{section.6}%
-\contentsline {section}{\numberline {VII.}Project Design}{1}{section.7}%
-\contentsline {section}{\numberline {VIII.}Resources}{2}{section.8}%
+\contentsline {section}{\numberline {III.}Datasets and Inputs}{2}{section.3}%
+\contentsline {section}{\numberline {IV.}Solution Statement}{3}{section.4}%
+\contentsline {section}{\numberline {V.}Benchmark Model}{3}{section.5}%
+\contentsline {section}{\numberline {VI.}Evaluation Metrics}{3}{section.6}%
+\contentsline {section}{\numberline {VII.}Project Design}{3}{section.7}%
+\contentsline {section}{\numberline {VIII.}Resources}{4}{section.8}%

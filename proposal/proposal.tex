@@ -18,7 +18,7 @@
 \hypersetup{
 	colorlinks=true,
 	linkcolor=blue,
-	urlcolor=purple,
+	urlcolor=blue,
 	linktoc=none
 }
 \titleformat*{\section}{\Large\bfseries}
@@ -48,7 +48,7 @@
 		
 		\hrule \vspace*{.5cm}
 		
-		\Large \textbf{A capstone proposal for clustering worldwide food production from the years 1961-2019.}
+		\Large \textbf{A capstone proposal for analyzing worldwide food production from the years 1961-2013.}
 		
 		\vspace*{.5cm} \hrule
 		
@@ -60,26 +60,45 @@
 	\end{titlepage} \newpage
 
 	\begin{titlepage}
-		\vspace*{2cm}
+		\vspace*{4cm}
 		\renewcommand*\contentsname{Table of Contents}
 		\tableofcontents
 	\end{titlepage} \newpage
+
 %%%% PAGE 1 %%%%
 
 	\section{Domain Background}
-	
-
-
+	The current world population is nearly 7.8 billion people, and this number is estimated to rise to around 9.7 billion in the year 2050. This means within the next 30 years, we will need to feed two billion more people without sacrificing the planet (1). This means we will need to double our crop production in order to feed that growing population. Agriculture is one of the greatest contributors of global warming, with farming consuming immense amounts of our water supplies and leaving major pollutants as its byproduct from fertilizer runoff (4).  \vspace*{2mm}\\
+	This leads to the question, how do we supply the necessary amount of food for a growing world population without sacrificing the climate of our planet? There are many solutions to this question, but the focus of this capstone will be on analyzing the global production of consumables, as well as the ratio of food (human consumption) to feed (livestock consumption) produced by each country. Only 55\% of the current world crop production is consumed by humans, with the remaining being fed to livestock. On top of this, nearly 25\% of the world's food calories are wasted before they can be consumed (4). \vspace*{2mm}\\
+	The personal motivation for investigating this problem is my interest in applying machine learning to the field of agriculture. With an increasing need for sustainability, applying machine learning techniques to predict yield amounts or for detecting crop diseases has been a key factor in my motivation behind studying machine learning.
 
 	\section{Problem Statement}
+	As initially stated above, the problem we face is how do we produce the necessary amount of food for an exponentially increasing population without sacrificing our own planet. \vspace*{2mm}\\	
+	One aspect to explore is which food items are the most produced and the use case for those crops, whether they are for human or animal consumption. This will allow us to understand where a majority of our food is being directed, and as suggested by \href{https://www.nationalgeographic.com/foodfeatures/feeding-9-billion/}{National Geographic}, could a shift in diet lead to more crops being used for human consumption rather than livestock feed.\vspace*{2mm}\\	
+	Another aspect of the data to explore is separating the countries into clusters based on their yearly production. Analyzing which countries are responsible for feeding the majority of the population, and how to ensure they can continue to do so. From this, we can also see which countries are not highly producing, and how we can aid them in increasing production if possible. \newpage	
 	
-	
-	
-	
+%%%% PAGE 2 %%%%
+
 	\section{Datasets and Inputs}
+	Two different datasets will be used in the analysis, one coming from \href{https://www.kaggle.com/dorbicycle/world-foodfeed-production}{Kaggle} and one coming from \href{http://www.fao.org/faostat/en/#data/OA}{FAO} (the Food and Agriculture Organization of the United Nations).\vspace*{2mm}\\	
+	The dataset obtained through Kaggle is a Food Balance Sheet that originated from FAO's database, but has been formatted for easy of use, with a total of 63 features and 21477 observations. Food Balance Sheets represent the pattern of a country's food supply during a period of time, in this case it is yearly from 1961 to 2013, and measured in 1000 tonnes (2). Important features that this file contains are the country, item, element, and yearly production:
+	\begin{itemize}
+		\item Area: 174 unique country names from around the world.
+		\item Item: 115 unique food items being globally produced.
+		\item Element: food - human consumable food available at a given time. \\ 
+		\hspace*{16.5mm} feed - livestock consumable food available at a given time.
+		\item Y1961 - Y2013: item available at time of measurement per year.
+	\end{itemize} \vspace*{2mm}
+	The dataset obtained through FAO is a time series dataset that contains the estimated/projected population (for both sexes) in each country from 1961 to 2018. The estimates are based on data from the World Population Prospects and World Urbanization Prospects (3). An important note is that the population dataset contains countries and later years that are not included in the Food Balance Sheet dataset, but will be left in to account for global population and future estimates. Some important features to note within the dataset:
+	\begin{itemize}
+		\item Area: 245 unique country names (71 more than first dataset).
+		\item Year: spans from 1961 to 2018 (5 years more than first dataset).
+		\item Unit: population estimations are counted in units of 1000 persons.
+		\item Value: estimate population count for each year.
+	\end{itemize}\vspace*{2mm}
+	The use cases for each dataset is as follows. The Kaggle dataset will be used in analyzing food production, seeing which countries produce the most and if it is for human or livestock consumption. This data will also be used to cluster countries together based on their production levels, ideally separating high and low producing countries. The FAO dataset will be used to compare the global population to the yearly total food production, as well as further analyzing the highest producing countries to see if they have the largest/fastest increasing populations. \newpage
 	
-	
-	
+%%%% PAGE 3 %%%%	
 	
 	\section{Solution Statement}
 	
@@ -87,12 +106,14 @@
 	
 	
 	\section{Benchmark Model}
-	
+	In general, the majority of this capstone will be in exploring the data and finding insights about food production through graphing and statistical methods. Creating plots for top producing country's, top produced food items, and population changes will be the main focus of the work. \vspace*{2mm}\\	
+	We will also create a KMeans model to cluster our data based on food production, partitioning the 174 original country's into $k$ clusters. We will want to use the \href{https://www.scikit-yb.org/en/latest/api/cluster/elbow.html}{elbow method} in selecting our number of clusters, with an initial guess of using 2 to 3 cluster to separate countries based on high and low production (and possible medium). 
 	
 	
 	
 	\section{Evaluation Metrics}
-	
+	With the data being unlabeled, it will be difficult to ensure that our clusters are properly partitioned. However, we can analyze the countries within the clusters and see where the algorithm decided to split based on production count. \vspace*{2mm}\\
+	One metric we can use to evaluate our model will be a \href{https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html}{silhouette score}, which will measure on a scale from [-1,1] how close each point on one cluster is to points in the neighboring clusters (5).
 	
 	
 	
@@ -103,7 +124,12 @@
 
 	\newpage
 	\section{Resources}
-	
+	$[1]$ Oppenheim, Dor. ``Who Eats the Food We Grow?" \textit{Kaggle}, 30 Nov. 2017, \\ \hspace*{5mm} www.kaggle.com/dorbicycle/world-foodfeed-production. \vspace*{2.5mm}\\
+	$[2]$ ``Food Balances (Old Methodology and Population)." \textit{FAOSTAT}, Food and \\ \hspace*{5mm} Agriculture Organization of the United Nations, 12 Dec. 2017, \\ \hspace*{5mm} www.fao.org/faostat/en/\#data/FBSH. \vspace*{2.5mm}\\
+	$[3]$ ``Annual Population." \textit{FAOSTAT}, Food and Agriculture Organization of the \\ \hspace*{5mm} United Nations, 16 Dec. 2019, www.fao.org/faostat/en/\#data/OA. \vspace*{2.5mm}\\
+	$[4]$ Foley, Jonathan. ``A Five-Step Plan to Feed the World." \textit{Feeding 9 Billion - \\ \hspace*{5mm} National Geographic}, www.nationalgeographic.com/foodfeatures/feeding-9-billion/. 
+	$[5]$ ``Selecting the Number of Clusters with Silhouette Analysis on KMeans \\ \hspace*{5mm} Clustering." \textit{Scikit}, 
+	\\ \hspace*{6mm} scikit-learn.org/stable/auto\_examples/cluster/plot\_kmeans\_silhouette\_analysis.html. 
 
 \end{spacing}
 \end{document}
