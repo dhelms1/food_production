@@ -25,7 +25,7 @@ Using the population dataset, we want to explore the idea of using a linear mode
 
 ---
 
-## Project Breakdown
+## File Breakdown
 *To be filled in...*
 
 ---
