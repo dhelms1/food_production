@@ -2,7 +2,7 @@
 \contentsline {section}{\numberline {II.}Problem Statement}{1}{section.2}%
 \contentsline {section}{\numberline {III.}Datasets and Inputs}{2}{section.3}%
 \contentsline {section}{\numberline {IV.}Solution Statement}{3}{section.4}%
-\contentsline {section}{\numberline {V.}Benchmark Model}{3}{section.5}%
+\contentsline {section}{\numberline {V.}Benchmark Model}{4}{section.5}%
 \contentsline {section}{\numberline {VI.}Evaluation Metrics}{4}{section.6}%
-\contentsline {section}{\numberline {VII.}Project Design}{4}{section.7}%
-\contentsline {section}{\numberline {VIII.}Resources}{5}{section.8}%
+\contentsline {section}{\numberline {VII.}Project Design}{5}{section.7}%
+\contentsline {section}{\numberline {VIII.}Resources}{6}{section.8}%
