@@ -93,6 +93,51 @@ def plot_yearly_prod(data):
 
 
 
+def top_20_feed_food(feed, food):   
+    '''
+    Create two plots, showing the top 20 produced food items for both human
+    and livestock consumption.
+    '''
+    top_feed_prod = {}
+    top_food_prod = {}
+
+    for item in feed.Item.unique(): # Iterate through feed items
+        top_feed_prod[item] = feed[feed.Item == item]['TotalProd'].sum()
+
+    for item in food.Item.unique(): # Iterate through food items
+        top_food_prod[item] = food[food.Item == item]['TotalProd'].sum()
+
+    # Create feed dataframe, sort by descending, and select the top 20 rows
+    feed_df = pd.DataFrame(list(top_feed_prod.items()), columns=['Item', 'Production'])
+    feed_sorted = feed_df.sort_values(by='Production', ascending=False).iloc[:20, :] # top 20 rows
+
+    # Create food dataframe, sort by descending, and select the top 20 rows
+    food_df = pd.DataFrame(list(top_food_prod.items()), columns=['Item', 'Production'])
+    food_sorted = food_df.sort_values(by='Production', ascending=False).iloc[:20, :] # top 20 rows
+
+    # Plot both figures as subplots to compare
+    plt.figure(figsize=(15,6))
+    ax1 = plt.subplot(1,2,1)
+    ax1.title.set_text('Top 20 Feed (Livestock) Products')
+    sns.barplot(x='Production', y='Item', data=feed_sorted)
+    plt.xlabel('Production (in 1000 tonnes)')
+    plt.ylabel(' ') # remove y label
+
+    ax2 = plt.subplot(1,2,2)
+    ax2.title.set_text('Top 20 Food (Human) Products')
+    sns.barplot(x='Production', y='Item', data=food_sorted)
+    plt.xlabel('Production (in 1000 tonnes)')
+    plt.ylabel(' ') # remove y label
+
+    plt.tight_layout()
+
+    # Clear dataframes for memory purposes (not sure if necessary but good for practice)
+    feed_df = food_df = feed_sorted = food_sorted = None
+    
+    return None
+
+
+
 
 
 
