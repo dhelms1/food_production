@@ -53,7 +53,7 @@ def plot_top_20_countries(data):
 
 
 
-def plot_yearly_prod(data):
+def plot_yearly_country(data):
     '''
     Plot the top 10 countries production trends over the last 50 years.
     '''
