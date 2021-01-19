@@ -154,6 +154,68 @@ def top_20_feed_food(feed, food):
 
 
 
+def top_feed_producers(feed):
+    '''
+    Plot the top 2 products from the feed dataframe, sorted by top 10 producing countries.
+    '''
+    # Get top 10 producers for the top 2 feed products
+    cereal = pd.DataFrame(feed[feed.Item == 'Cereals - Excluding Beer'].groupby('Area')
+                          ['TotalProd'].agg('sum').sort_values(ascending=False))[:10].T
+    
+    maize = pd.DataFrame(feed[feed.Item == 'Maize and products'].groupby('Area')
+                         ['TotalProd'].agg('sum').sort_values(ascending=False))[:10].T
+    
+    # Clear index for graph visual
+    cereal.rename(index={'TotalProd':' '}, inplace=True)
+    maize.rename(index={'TotalProd':' '}, inplace=True)
+
+    # Plot a horizontal stacked bar chart for each dataframe
+    cereal.plot.barh(stacked=True, figsize=(12,1), color=sns.color_palette("hls", 10))
+    plt.title('Top 10 Producers of Cereals - Excluding Beer')
+    plt.xlabel('Production (in 1000 tonnes) per country')
+    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+
+    maize.plot.barh(stacked=True, figsize=(12,1), color=sns.color_palette("hls", 10))
+    plt.title('Top 10 Producers of Maize and products')
+    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+    plt.xlabel('Production (in 1000 tonnes) per country')
+    plt.show();
+    
+    cereal = maize = None # clear temp dataframes
+    return None
+
+
+
+def plot_yearly_product(data, title):
+    '''
+    Plot the top 10 products trend over the last 50 years.
+    '''
+    top_10 = data.groupby('Item')['TotalProd'].agg('sum').sort_values(ascending=False).index[:10].values
+
+    top_10_df = pd.DataFrame()
+    top_10_df['Index'] = data.columns[5:-1].values
+
+    for product in top_10:
+        top_10_df[product] = data[data.Item == product].iloc[:, 5:-1].sum(axis=0).values
+
+    top_10_df.set_index('Index', inplace=True)
+    top_10_df = top_10_df.T
+    
+    plt.figure(figsize=(16,8))
+    x = np.arange(1,54)
+    for i in range(10):
+        sns.lineplot(x=top_10_df.columns.values, y=top_10_df.values[i], color=sns.color_palette("husl", 10)[i])
+    plt.legend(top_10_df.index.values)
+    plt.xticks(rotation='vertical')
+    plt.title(f'Top 10 {title} Products from 1961 to 2013')
+    plt.ylabel('Production (in 1000 tonnes)')
+    plt.show();
+    
+    top_10_df = None # clear temporary dataframe
+    
+    return None
+
+
 
 
 
