@@ -3,10 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# set default parameters for graphs
-sns.set_style('darkgrid')
-plt.rcParams['font.size'] = 12
-
 def format_population_data(pop):
     '''
     Take the population dataset and reformat it to match the production dataset.
@@ -154,35 +150,27 @@ def top_20_feed_food(feed, food):
 
 
 
-def top_feed_producers(feed):
+def top_10_producers(data):
     '''
-    Plot the top 2 products from the feed dataframe, sorted by top 10 producing countries.
+    Plot the top 10 producers for the top 10 products for a given dataset.
     '''
-    # Get top 10 producers for the top 2 feed products
-    cereal = pd.DataFrame(feed[feed.Item == 'Cereals - Excluding Beer'].groupby('Area')
+    # Get the top 4 product names from the dataset
+    products = pd.DataFrame(data.groupby('Item')['TotalProd'].agg('sum').sort_values(ascending=False))[:4].index.values
+    
+    for product in products:
+        df = None # clear previous dataframe
+        df = pd.DataFrame(data[data.Item == product].groupby('Area')
                           ['TotalProd'].agg('sum').sort_values(ascending=False))[:10].T
+        df.rename(index={'TotalProd':' '}, inplace=True)
+        
+        df.plot.barh(stacked=True, figsize=(12,1), color=sns.color_palette("hls", 10))
+        plt.title(f'Top 10 Producers of {product}')
+        plt.xlabel('Production (in 1000 tonnes) per country')
+        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
     
-    maize = pd.DataFrame(feed[feed.Item == 'Maize and products'].groupby('Area')
-                         ['TotalProd'].agg('sum').sort_values(ascending=False))[:10].T
-    
-    # Clear index for graph visual
-    cereal.rename(index={'TotalProd':' '}, inplace=True)
-    maize.rename(index={'TotalProd':' '}, inplace=True)
-
-    # Plot a horizontal stacked bar chart for each dataframe
-    cereal.plot.barh(stacked=True, figsize=(12,1), color=sns.color_palette("hls", 10))
-    plt.title('Top 10 Producers of Cereals - Excluding Beer')
-    plt.xlabel('Production (in 1000 tonnes) per country')
-    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
-
-    maize.plot.barh(stacked=True, figsize=(12,1), color=sns.color_palette("hls", 10))
-    plt.title('Top 10 Producers of Maize and products')
-    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
-    plt.xlabel('Production (in 1000 tonnes) per country')
     plt.show();
-    
-    cereal = maize = None # clear temp dataframes
-    return None
+    df = None # clear any remaining data
+    return None    
 
 
 
@@ -214,6 +202,68 @@ def plot_yearly_product(data, title):
     top_10_df = None # clear temporary dataframe
     
     return None
+
+
+
+def yearly_pop_with_line(data):
+    '''
+    Plot the yearly population from 1961 to 2013. Add a straight line from starting
+    to ending population to compare linear correlation.
+    '''
+    yearly_pop = data.iloc[:, 2:].sum(axis=0)
+    
+    # Make a line using the beggining and endpoints
+    x = [0, len(yearly_pop)-1]
+    y = [yearly_pop[0], yearly_pop[-1]]
+    line = pd.DataFrame({'x':x, 'y':y})
+    
+    # Plot data and estimated line
+    plt.figure(figsize=(14,8))
+    sns.lineplot(x='x', y='y', data=line, color='red', label='Linear Estimation', alpha=0.6, linewidth=2)
+    sns.scatterplot(x=yearly_pop.index, y=yearly_pop.values, s=90, color='green', label='Population Data')
+    plt.legend()
+    plt.xticks(rotation='vertical')
+    plt.title('Global Population (Estimated)')
+    plt.ylabel('Population (in 1000 persons)')
+    plt.xlabel(' ')
+    plt.show();
+    
+    line = None # clear temp data
+    return None
+
+
+
+def pop_vs_prod(data, pop):
+    '''
+    Plot the global popluation (independent variable) against the global food
+    production (dependent variable). We also plot a straight line through the 
+    data, as well as an estimated linear regression model with 95% confidence.
+    '''
+    yearly_pop = pop.iloc[:, 2:].sum(axis=0).values # x (independent) variable
+    yearly_prod = data.iloc[:, 5:-1].sum(axis=0).values # y (dependent) variable
+
+    x = [yearly_pop[0], yearly_pop[-1]]
+    y = [yearly_prod[0], yearly_prod[-1]]
+    line = pd.DataFrame({'x':x, 'y':y})
+
+    plt.figure(figsize=(14,8))
+    sns.regplot(x=yearly_pop, y=yearly_prod, order=2, scatter=False, ci=95, color='green', label='Estimated Regressor (95% CI)')
+    sns.lineplot(x='x', y='y', data=line, color='red', alpha=0.6, linewidth=2, label='Linear Line')
+    sns.scatterplot(x=yearly_pop, y=yearly_prod, s=100, color='purple', label='True Points')
+    plt.title('Global Population vs Global Production (per year)')
+    plt.ylabel('Production (in 1000 tonnes)')
+    plt.xlabel('Population (in 1000 persons)')
+    plt.legend()
+    plt.show();
+    
+    yearly_pop = yearly_prod = line = None # clear memory
+    return None
+
+
+
+
+
+
 
 
 
