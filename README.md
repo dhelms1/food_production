@@ -4,7 +4,7 @@
 
 ---
 
-*Note: refer to `proposal/proposal.pdf` for the full in-depth project outline.*
+*Note: refer to `proposal.pdf` for the full in-depth project outline.*
 
 ## Introduction
 The current world population is nearly 7.8 billion people, and this number is estimated to rise to around 9.7 billion in the year 2050. This means within the next 30 years, we will need to feed two billion more people without sacrificing the planet. This means we will need to double our crop production in order to feed that growing population. Agriculture is one of the greatest contributors of global warming, with farming consuming immense amounts of our water supplies and leaving major pollutants as its byproduct from fertilizer runoff. This leads to the question, how do we supply the necessary amount of food for a growing world population without sacrificing the climate of our planet?
