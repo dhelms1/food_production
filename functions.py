@@ -335,7 +335,81 @@ def plot_top_prod_vs_pop(data, pop):
 
 
 
+def pop_growth_plot_t(pop):
+    '''
+    Plot the top 10 countries that have had the largest population increase over
+    the last 50 years.
+    '''
+    growth = pop.copy()
+    growth.drop(growth.columns.difference(['Area']), axis=1, inplace=True)
 
+    dates = np.arange(1961, 2014)
+
+    # Get population change from Year to (Year+1)
+    for date, idx in enumerate(range(2,54)):
+        title = str(dates[date]) + '-' + str(dates[date+1])
+        growth[title] = pop.iloc[:, idx+1] - pop.iloc[:, idx] 
+
+    growth['TotalChange'] = pop['Y2013'] - pop['Y1961']
+    growth.sort_values(by='TotalChange', ascending=False, inplace=True)
+    growth = growth.iloc[:10, :]
+    growth.set_index('Area', inplace=True)
+
+    x = np.arange(1,53)
+
+    plt.figure(figsize=(12,10))
+
+    # Plot the total change from 1961 to 2013
+    ax1 = plt.subplot(2,1,1)
+    sns.barplot(x=growth.TotalChange.values, y=growth.TotalChange.index.values, palette=sns.color_palette("hls", 10))
+    ax1.title.set_text('Total Population Change from 1961 to 2013')
+    plt.xlabel('Population Change (in 1000 persons)')
+    plt.ylabel(' ')
+
+    growth.drop(['TotalChange'], axis=1, inplace=True) # no longer needed
+
+    # Plot the yearly chagne from 1961 to 2013
+    ax2 = plt.subplot(2,1,2)
+    for i in range(10):
+        sns.lineplot(x=x, y=growth.values[i], color=sns.color_palette("hls", 10)[i])
+    plt.xticks(ticks=x, labels=growth.columns.values, rotation='vertical')
+    ax2.title.set_text('Yearly Population Change from 1961 to 2013')
+    plt.ylabel('Population (in 1000 persons)')
+
+    plt.tight_layout()
+    plt.show();
+
+    growth = None
+    return None
+
+
+
+def highest_pop_ratio(pop):
+    '''
+    Plot the highest population increase countries relative to their 1961 population.
+    This means highest increase from 1961 to 2013 relative to size (not total increase).
+    '''
+    growth = pop.copy()
+    growth.drop(growth.columns.difference(['Area']), axis=1, inplace=True)
+    growth['TotalChange'] = pop['Y2013'] - pop['Y1961']
+    growth['Ratio'] = pop['Y2013'] / pop['Y1961']
+
+    growth.sort_values(by='Ratio', ascending=False, inplace=True)
+    growth = growth.iloc[:10, :]
+    legend = [area + ' (' + str(round(ratio)) + 'x)' for area, ratio in zip(growth.Area.values, growth.Ratio.values)]
+
+    x = np.arange(1,54)
+    plt.figure(figsize=(14,8))
+    for i, idx in enumerate(growth.Area.values):
+        sns.lineplot(x=x, y=pop[pop.Area == idx].iloc[: ,2:].values[0], color=sns.color_palette("hls", 10)[i])
+    plt.xticks(ticks=x, labels=pop.columns.values[2:], rotation='vertical')
+    plt.title('Highest Population Ratio Increase from 1961 to 2013')
+    plt.ylabel('Population (in 1000 persons)')
+    plt.legend(legend)
+    plt.show();
+    
+    growth = None
+    return None
 
 
 
