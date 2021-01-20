@@ -3,14 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def format_population_data(pop):
+def format_population_data(pop, name='pop_formatted.csv'):
     '''
     Take the population dataset and reformat it to match the production dataset.
-    This includes creating columns for each year from 1961 to 2013, will observations
-    being the unique country names. Years 2013 to 108 will be dropped in this function.
+    This includes creating columns for each year from 1961 to 2013, with observations
+    being the unique country names. Years 2013 to 2018 will be dropped in this function.
     
     Rows with missing years will be filled with NaN values to match production dataset.
-    This function returns a new dataframe.
+    This function saves a new dataframe to the current directory as a given name.
     '''
     years = np.arange(1961,2014) # 1961 - 2013
     countries = pop.Area.unique() # Alphabetical list of each country name
@@ -31,7 +31,10 @@ def format_population_data(pop):
         col_name = 'Y'+ str(year) #  Create column name to match production dataset
         pop_df[col_name] = pop_vals # Create new column in our dataframe
     
-    return pop_df
+    pop_df.to_csv(name, index=False)
+    pop_df = None # clear temp memory
+    
+    return None
 
 
 
@@ -258,6 +261,71 @@ def pop_vs_prod(data, pop):
     
     yearly_pop = yearly_prod = line = None # clear memory
     return None
+
+
+
+def plot_20_pop(data):
+    '''
+    Plot the top 20 countries for population density in 2013.
+    '''
+    # Drop the general 'China' Area since 'China, mainland' is already included as first
+    pop_count = data[['Area', 'Y2013']].sort_values(by ='Y2013', ascending=False)[1:20]
+
+    plt.figure(figsize=(12,8))
+    sns.barplot(x='Y2013', y='Area', data=pop_count)
+    plt.title('Top 20 Populated Countries (2013 Estimates)')
+    plt.xlabel('Population (in 1000 persons)')
+    plt.ylabel(' ')
+    plt.show();
+
+    pop_count = None
+    return None
+
+
+
+def plot_top_prod_vs_pop(data, pop):
+    '''
+    Plot two graphs:
+    1) Top 3 countries yearly production
+    2) Top 3 countries yearly population
+    '''
+    top_3 = data.groupby('Area')['TotalProd'].agg('sum').sort_values(ascending=False).index[:3].values
+    prod_df = pd.DataFrame(data=data.columns[5:-1].values, columns=['Years'])
+
+    for country in top_3:
+        prod_df[country] = data[data.Area == country].iloc[:, 5:-1].sum(axis=0).values
+
+    prod_df.set_index('Years', inplace=True)
+    prod_df = prod_df.T  
+
+    pop_df = pop.drop('Unit', axis=1).sort_values(by ='Y2013', ascending=False)[1:4]
+    pop_df.set_index('Area', inplace=True)
+
+    plt.figure(figsize=(12,10))
+    # Plot production for top 3 countries
+    ax1 = plt.subplot(2,1,1)
+    for i in range(3):
+        sns.lineplot(x=prod_df.columns.values, y=prod_df.values[i], color=sns.color_palette("hls", 3)[i])
+    plt.legend(prod_df.index.values)
+    plt.xticks(rotation='vertical')
+    plt.title('Top 3 Yearly Production from 1961 to 2013')
+    plt.ylabel('Production (in 1000 tonnes)')
+
+    # Plot population for top 3 countries
+    ax2 = plt.subplot(2,1,2)
+    for i in range(3):
+        sns.lineplot(x=pop_df.columns.values, y=pop_df.values[i], color=sns.color_palette("hls", 3)[i])
+    plt.legend(pop_df.index.values)
+    plt.xticks(rotation='vertical')
+    plt.title('Top 3 Yearly Population from 1961 to 2013')
+    plt.ylabel('Population (in 1000 persons)')
+
+    plt.tight_layout()
+    plt.show();
+    
+    top_3 = prod_df = pop_df = None # clear memory
+    return None
+
 
 
 
