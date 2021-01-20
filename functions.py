@@ -31,6 +31,10 @@ def format_population_data(pop, name='pop_formatted.csv'):
         col_name = 'Y'+ str(year) #  Create column name to match production dataset
         pop_df[col_name] = pop_vals # Create new column in our dataframe
     
+    # Drop China since it is broken down into subareas
+    idx = pop_df.index[pop_df.Area == 'China'].values[0]
+    pop_df.drop(44, axis=0, inplace=True)
+    
     pop_df.to_csv(name, index=False)
     pop_df = None # clear temp memory
     
@@ -268,8 +272,7 @@ def plot_20_pop(data):
     '''
     Plot the top 20 countries for population density in 2013.
     '''
-    # Drop the general 'China' Area since 'China, mainland' is already included as first
-    pop_count = data[['Area', 'Y2013']].sort_values(by ='Y2013', ascending=False)[1:20]
+    pop_count = data[['Area', 'Y2013']].sort_values(by ='Y2013', ascending=False)[:20]
 
     plt.figure(figsize=(12,8))
     sns.barplot(x='Y2013', y='Area', data=pop_count)
@@ -298,7 +301,7 @@ def plot_top_prod_vs_pop(data, pop):
     prod_df.set_index('Years', inplace=True)
     prod_df = prod_df.T  
 
-    pop_df = pop.drop('Unit', axis=1).sort_values(by ='Y2013', ascending=False)[1:4]
+    pop_df = pop.drop('Unit', axis=1).sort_values(by ='Y2013', ascending=False)[0:3]
     pop_df.set_index('Area', inplace=True)
 
     plt.figure(figsize=(12,10))
@@ -310,11 +313,15 @@ def plot_top_prod_vs_pop(data, pop):
     plt.xticks(rotation='vertical')
     plt.title('Top 3 Yearly Production from 1961 to 2013')
     plt.ylabel('Production (in 1000 tonnes)')
-
+    
+    # keep same color order for second plot
+    colors = sns.color_palette("hls", 3)
+    colors_ordered = [colors[0], colors[2], colors[1]]
+    
     # Plot population for top 3 countries
     ax2 = plt.subplot(2,1,2)
     for i in range(3):
-        sns.lineplot(x=pop_df.columns.values, y=pop_df.values[i], color=sns.color_palette("hls", 3)[i])
+        sns.lineplot(x=pop_df.columns.values, y=pop_df.values[i], color=colors_ordered[i])
     plt.legend(pop_df.index.values)
     plt.xticks(rotation='vertical')
     plt.title('Top 3 Yearly Population from 1961 to 2013')
