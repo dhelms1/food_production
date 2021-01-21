@@ -101,16 +101,8 @@ def plot_yearly_country(data):
     '''
     Plot the top 10 countries production trends over the last 50 years.
     '''
-    top_10 = data.groupby('Area')['TotalProd'].agg('sum').sort_values(ascending=False).index[:10].values
-
-    top_10_df = pd.DataFrame()
-    top_10_df['Index'] = data.columns[5:-1].values
-
-    for country in top_10:
-        top_10_df[country] = data[data.Area == country].iloc[:, 5:-1].sum(axis=0).values
-
-    top_10_df.set_index('Index', inplace=True)
-    top_10_df = top_10_df.T  
+    top_10_df = data.groupby('Area').agg('sum').sort_values(by='TotalProd', ascending=False)[:10]
+    top_10_df = top_10_df.iloc[:, :-1] 
     
     plt.figure(figsize=(16,8))
     x = np.arange(1,54)
