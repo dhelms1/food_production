@@ -8,6 +8,7 @@ def format_population_data(pop, name='pop_formatted.csv'):
     Take the population dataset and reformat it to match the production dataset.
     This includes creating columns for each year from 1961 to 2013, with observations
     being the unique country names. Years 2013 to 2018 will be dropped in this function.
+    China will also be dropped in this function.
     
     Rows with missing years will be filled with NaN values to match production dataset.
     This function saves a new dataframe to the current directory as a given name.
@@ -37,7 +38,6 @@ def format_population_data(pop, name='pop_formatted.csv'):
     
     pop_df.to_csv(name, index=False)
     pop_df = None # clear temp memory
-    
     return None
 
 
@@ -46,16 +46,53 @@ def plot_top_20_countries(data):
     '''
     Create a barplot of the top 20 producing countries over the last 50 years. 
     '''
-    # Get top 20 producing countries    
+    # Get top 20 producing countries (total)
     prod_df = pd.DataFrame(data.groupby('Area')['TotalProd'].agg('sum').sort_values(ascending=False))[:20]
     
-    plt.figure(figsize=(12,8))
+    # # Get top 20 producing countries (yearly)
+    tmp = data.copy()
+    tmp['AvgProd'] = tmp['TotalProd'] / len(tmp.columns[5:-1])
+    tmp = tmp.groupby('Area')['AvgProd'].agg('sum').sort_values(ascending=False)[:20]
+    
+    plt.figure(figsize=(12,11))
+    ax1 = plt.subplot(2,1,1)
     sns.barplot(x=prod_df.TotalProd, y=prod_df.index)
-    plt.title('Top 20 Producing Countries')
+    plt.title('Top 20 Producing Countries (in Total)')
+    plt.xlabel('Production (in 1000 tonnes)')
+    plt.ylabel(' ')
+    
+    ax1 = plt.subplot(2,1,2)
+    sns.barplot(x=tmp.values, y=tmp.index)
+    plt.title('Top 20 Producing Countries (Yearly Average)')
+    plt.xlabel('Production (in 1000 tonnes)')
+    plt.ylabel(' ')
+    
+    plt.tight_layout()
+    plt.show();
+    
+    prod_df = tmp = None # clear temporary dataframes
+    return None
+
+
+
+def plot_top_n(data, n):
+    '''
+    Plot the top n countries total production against the remainder to see ratio.
+    '''
+    top_3 = data.groupby('Area')['TotalProd'].agg('sum').sort_values(ascending=False)[:n]
+    top_3_val = top_3.values.sum()
+    remainder = data.groupby('Area')['TotalProd'].agg('sum').sort_values(ascending=False)[n:]
+    remainder_val = remainder.values.sum()
+    
+    plt.figure(figsize=(14, 1))
+    colors = [sns.color_palette('husl', 10)[0], sns.color_palette('husl', 15)[10]]
+    sns.barplot(x=[top_3_val, remainder_val], y=[f'Top {n}', f'Remaining {174-n}'], palette=colors)
+    ratio = round(top_3_val / (top_3_val + remainder_val), 4) * 100
+    plt.title(f'Top {n} Countries Production Ratio ({ratio}%)')
     plt.xlabel('Production (in 1000 tonnes)')
     plt.show();
     
-    prod_df = None # clear temporary dataframes
+    top_3 = remainder = None
     return None
 
 
@@ -91,6 +128,39 @@ def plot_yearly_country(data):
 
 
 
+def china_prod(data):
+    '''
+    Plot the top 20 produced items for China, mainland (by total)
+    '''
+    prod = data[data.Area == 'China, mainland'].groupby('Item')[['Item','TotalProd']].agg('sum').sort_values(by='TotalProd', 
+                                                                                                             ascending=False)[:10]
+    plt.figure(figsize=(13,11))
+    ax1 = plt.subplot(2,1,1)
+    sns.barplot(x=prod.TotalProd, y=prod.index, palette=sns.color_palette('hls', 20))
+    plt.title('China\'s Top 10 Produced Items (in Total)')
+    plt.xlabel('Production (in 1000 tonnes)')
+    plt.ylabel(' ')
+    
+    prod = data[data.Area == 'China, mainland'].groupby('Item').agg('sum').sort_values(by='TotalProd', ascending=False)[:10]
+    prod = prod.iloc[:, :-1]
+
+    ax2 = plt.subplot(2,1,2)
+    x = np.arange(1,54)
+    for i in range(10):
+        sns.lineplot(x=prod.columns.values, y=prod.values[i], color=sns.color_palette("hls", 10)[i])
+    plt.legend(prod.index.values)
+    plt.xticks(rotation='vertical')
+    plt.title('Production Trend for China\'s Top 10 Items')
+    plt.ylabel('Production (in 1000 tonnes)')
+    
+    plt.tight_layout()
+    plt.show();
+
+    prod = None
+    return None
+
+
+
 def plot_top_20_food(data):
     '''
     Create a barplot of the top 20 produced items over the last 50 years.
@@ -119,6 +189,41 @@ def plot_top_20_food(data):
     plt.show();
     
     prod_df = count_df = None # clear temporary dataframes
+    return None
+
+
+
+def cereal_milk_prod(data):
+    '''
+    Plot the top 10 producers for cereals and milks, yearly.
+    '''
+    tmp = data[data.Item == 'Cereals - Excluding Beer'].groupby('Area').agg('sum').sort_values(by='TotalProd', ascending=False)[:10]
+    tmp = tmp.iloc[:, :-1]
+
+    tmp2 = data[data.Item == 'Milk - Excluding Butter'].groupby('Area').agg('sum').sort_values(by='TotalProd', ascending=False)[:10]
+    tmp2 = tmp2.iloc[:, :-1]
+
+    plt.figure(figsize=(13,9))
+    ax1 = plt.subplot(2,1,1)
+    for i in range(10):
+        sns.lineplot(x=tmp.columns.values, y=tmp.values[i], color=sns.color_palette("hls", 10)[i])
+    plt.legend(tmp.index.values, loc='center left', bbox_to_anchor=(1.0, 0.5))
+    plt.xticks(rotation='vertical')
+    plt.title('Top 10 Producing Countries for Cereals - Excluding Beer')
+    plt.ylabel('Production (in 1000 tonnes)')
+
+    ax2 = plt.subplot(2,1,2)
+    for i in range(10):
+        sns.lineplot(x=tmp2.columns.values, y=tmp2.values[i], color=sns.color_palette("hls", 10)[i])
+    plt.legend(tmp2.index.values, loc='center left', bbox_to_anchor=(1.0, 0.5))
+    plt.xticks(rotation='vertical')
+    plt.title('Top 10 Producing Countries for Milk - Excluding Butter')
+    plt.ylabel('Production (in 1000 tonnes)')
+
+    plt.tight_layout()
+    plt.show();
+
+    tmp = tmp2 = None
     return None
 
 
