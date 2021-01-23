@@ -220,6 +220,30 @@ def cereal_milk_prod(data):
 
 
 
+def food_feed_compare(feed, food):
+    '''
+    Plot the frequency and total production for both feed and food.
+    '''
+    # Plot class distribution
+    plt.figure(figsize=(12,6))
+
+    ax1 = plt.subplot(1,2,1)
+    sns.barplot(x=['Feed', 'Food'], y=[len(feed), len(food)], palette='viridis')
+    plt.title('Food vs Feed (Frequency)')
+    plt.ylabel('Number of Observations')
+
+    ax2 = plt.subplot(1,2,2)
+    sns.barplot(x=['Feed', 'Food'], y=[feed['TotalProd'].sum(), food['TotalProd'].sum()], palette='viridis')
+    plt.title('Food vs Feed (Quantity)')
+    plt.ylabel('Production Quantity (in 1000 tonnes)')
+
+    plt.tight_layout()
+    plt.show();
+    
+    return None
+
+
+
 def top_20_feed_food(feed, food):   
     '''
     Create two plots, showing the top 20 produced food items for both human
