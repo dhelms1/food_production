@@ -4,8 +4,8 @@
 
 ---
 
-*Note: refer to `proposal.pdf` for the full in-depth project outline.*
-
+*Note: refer to `proposal.pdf` for the full in-depth project outline.* 
+*Note: refer to `project_report.pdf` for the full in-depth project findings and conclusion.*
 ---
 
 ## Software & Libraries
