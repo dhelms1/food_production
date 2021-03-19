@@ -27,7 +27,7 @@ Two different datasets will be used in the analysis, one coming from [Kaggle](ht
 ### Regression model
 An initial simple linear model was fit using first degree features. The model had an RMSE of around 405,000 and did not fit he production/population data well. In order to tune this, we created polynomial features for a range of degrees (1 to 8) and selected the top 4based on minimizing the RMSE values. Below are those RMSE values as well as their fit models plotted against our data.
 
-<img src="/result_imgs/poly_rmse.jpg" width="700"> <img src="/result_imgs/poly_models.jpg" width="900">
+<img src="/result_imgs/poly_rmse.jpg" width="600"> <img src="/result_imgs/poly_models.jpg" width="900">
 
 From the [World Resources Institute](https://www.wri.org/blog/2018/12/how-sustainably-feed-10-billion-people-2050-21-charts), we know that we need an increase of around 56% in production from 2010 to 2050. The 2010 global production, from our dataset, was 11,445,072 (in 1000 tonnes). Following this idea, that means we need to produce 17,854,312.32 (in 1000 tonnes) total for the 2050 population. This seems to follow the degree 4 polynomial model, which estimated a production of 17,341,906.93 (in 1000 tonnes).
 
