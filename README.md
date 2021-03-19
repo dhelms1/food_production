@@ -23,7 +23,7 @@ Two different datasets will be used in the analysis, one coming from [Kaggle](ht
 
 ---
 
-## Modeling
+## Modeling Results
 ### Regression model
 An initial simple linear model was fit using first degree features. The model had an RMSE of around 405,000 and did not fit he production/population data well. In order to tune this, we created polynomial features for a range of degrees (1 to 8) and selected the top 4based on minimizing the RMSE values. Below are those RMSE values as well as their fit models plotted against our data.
 
